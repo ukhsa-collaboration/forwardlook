@@ -1,0 +1,19 @@
+Package: forwardlook
+Title: Get research and statistics announcements from GOV.UK
+Version: 0.0.0.9000
+Authors@R: person(given = "Si", family = "Maxwell", email = "simon.maxwell@ukhsa.gov.uk", role = c("aut", "cre"))
+Description: `forwardlookR` contains functions to automatically scrape and clean research and statistics announcements from GOV.UK.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.2
+Imports: 
+    cli,
+    dplyr,
+    httr,
+    jsonlite,
+    lubridate,
+    purrr,
+    rvest,
+    stringr,
+    tibble
