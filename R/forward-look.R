@@ -12,6 +12,7 @@
 #' @importFrom dplyr arrange filter mutate
 #' @importFrom lubridate dmy
 #' @importFrom stringr str_detect
+#' @importFrom rlang .data
 #'
 #' @return A tibble.
 #' @export
@@ -67,7 +68,7 @@ forward_look <- function(organisation = "UK Health Security Agency", type = "upc
 
     tbl <-
       tbl |>
-      dplyr::filter(!stringr::str_detect(title, "Week|Weekly|week|weekly"))
+      dplyr::filter(!stringr::str_detect(.data$title, "Week|Weekly|week|weekly"))
 
   }
 

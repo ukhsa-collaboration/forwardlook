@@ -17,7 +17,3 @@ A list.
 \description{
 Get GOV.UK research and statistics announcement information
 }
-\examples{
-url <- "a statistics announcement url"
-get_announcement_info(url)
-}

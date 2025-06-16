@@ -9,9 +9,6 @@
 #' @return A list.
 #' @export
 #'
-#' @examples
-#' url <- "a statistics announcement url"
-#' get_announcement_info(url)
 get_announcement_info <- function(url, verbose = TRUE) {
 
   # URL checker:

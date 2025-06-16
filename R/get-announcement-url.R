@@ -20,21 +20,6 @@ get_announcement_url <- function(organisation = "UK Health Security Agency", typ
     cli::cli_abort("{.var organisation} must be a {.cls character} vector.")
   }
 
-  # Load GOV.UK organisation list (if file doesn't exist then info will be scraped from GOV.UK organisations API):
-  if (!file.exists("data/govukorgs.rda")) {
-
-    if (verbose) {
-      cli::cli_alert_info("Calling GOV.UK organisations API. Updating organisation information...")
-    }
-
-    # Scrape list of organisations from GOV.UK API and save in \data:
-    update_org_info()
-
-  }
-
-  # Read in list of GOV.UK organisations:
-  load("data/govukorgs.rda")
-
   # Check if user-specified `organisation` is a valid option:
   if (!organisation %in% govuk_orgs$title) {
     cli::cli_abort(c(
