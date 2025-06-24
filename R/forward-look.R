@@ -1,7 +1,7 @@
-#' Get research and statistics announcements from GOV.UK
+#' Get statistics announcements from GOV.UK
 #'
 #' @param organisation UK Government department, agency or public body.
-#' @param type Type of announcement: all research and statistics, published statistics, upcoming statistics, cancelled statistics or research.
+#' @param type Type of announcement: upcoming statistics (default) or cancelled statistics.
 #' @param start_date Currently not used.
 #' @param end_date Currently not used.
 #' @param drop_weekly If `TRUE`, announcements for weekly publications are removed.
@@ -36,6 +36,7 @@ forward_look <- function(organisation = "UK Health Security Agency", type = "upc
   # Get vector of announcement URLs:
   urls <- get_announcement_url(organisation, type)
 
+  #
   if (verbose) {
 
     # Print update message:
