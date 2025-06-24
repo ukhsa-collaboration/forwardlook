@@ -1,6 +1,6 @@
-#' Get GOV.UK research and statistics announcement information
+#' Get GOV.UK statistics announcement information
 #'
-#' @param url URL of a research or statistics announcement.
+#' @param url URL of a statistics announcement (either upcoming or cancelled).
 #' @param verbose If `TRUE`, the default, update message(s) are returned.
 #'
 #' @importFrom cli cli_abort
@@ -37,9 +37,15 @@ get_announcement_info <- function(url, verbose = TRUE) {
 
   # Get type:
   get_type <- function(page) {
+    scraped_page <-
     page |>
       rvest::html_nodes(".gem-c-heading__context") |>
       rvest::html_text(trim = TRUE)
+
+    type <- sub(" announcement$", "", scraped_page)
+
+    return(type)
+
   }
 
   # Get organisation:

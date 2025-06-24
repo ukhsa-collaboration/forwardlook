@@ -1,7 +1,7 @@
-#' Get GOV.UK research and statistics announcement URLs
+#' Get GOV.UK statistics announcement URLs
 #'
-#' @param organisation UK Government department, agency or public body.
-#' @param type Type of announcement: all research and statistics, published statistics, upcoming statistics, cancelled statistics or research.
+#' @param organisation UK Government department, agency or public body (default: UK Health Security Agency).
+#' @param type Type of announcement: upcoming statistics (default) or cancelled statistics.
 #' @param verbose If `TRUE`, the default, update message(s) are returned.
 #'
 #' @importFrom cli cli_abort cli_alert cli_alert_info cli_alert_warning
@@ -38,18 +38,15 @@ get_announcement_url <- function(organisation = "UK Health Security Agency", typ
 
   # Create vector of statistics announcement types:
   type_vec <- c(
-    "all",
-    "published statistics",
     "upcoming statistics",
-    "cancelled statistics",
-    "research"
+    "cancelled statistics"
   )
 
   # Check if user-specified `type` is a valid option:
   if (!type %in% type_vec) {
     cli::cli_abort(c(
       x = "{.var type} is not a valid statistics announcement.",
-      i = "{.var type} must be either all, published statistics, upcoming statistics, cancelled statistics, or research."
+      i = "{.var type} must be either {.strong upcoming statistics} or {.strong cancelled statistics}. Published statistics and research do not have announcements on GOV.UK."
     ))
   }
 
@@ -81,11 +78,8 @@ get_announcement_url <- function(organisation = "UK Health Security Agency", typ
   # Get URL slug for type of statistics announcement:
   matched_type <- switch(
     matched_type,
-    "all" = "all_research_and_statistics",
-    "published statistics" = "statistics_published",
     "upcoming statistics" = "upcoming_statistics",
-    "cancelled statistics" = "cancelled_statistics",
-    "research" = "research"
+    "cancelled statistics" = "cancelled_statistics"
   )
 
   # Paste organisation and type of R&S into URL:
@@ -112,15 +106,6 @@ get_announcement_url <- function(organisation = "UK Health Security Agency", typ
     # Paste page number into Research and Statistics URL:
     url <- paste0(rands_url, i)
 
-    # Check URL is valid:
-    response <- httr::GET(url)
-
-    # Stop if URL is invalid page:
-    if (httr::status_code(response) != 200) {
-      cli::cli_alert_warning("Failed to fetch page {i}.")
-      break
-    }
-
     # Read HTML page:
     page <- rvest::read_html(url)
 
@@ -130,10 +115,15 @@ get_announcement_url <- function(organisation = "UK Health Security Agency", typ
       rvest::html_attr("href")
 
     # Check number of items to see if a result will be returned:
-    urls_on_page <- length(unlist(results))
+    urls_on_page <- length(results)
 
-    # If there are no announcements on the page then stop:
-    if(urls_on_page == 0){
+    # If there are no announcements on the first page then stop:
+    if (i == 1 && urls_on_page == 0) {
+      cli::cli_alert_warning("No {type} announcements found on page.")
+    }
+
+    # Stop repeat loop when there are no announcements on a page:
+    if (urls_on_page == 0){
       break
     }
 
@@ -150,7 +140,7 @@ get_announcement_url <- function(organisation = "UK Health Security Agency", typ
     # Combine number of announcements on each page into vector:
     n_announcements <- c(n_announcements, urls_on_page)
 
-    #
+    # Move page counter along 1:
     i <- i + 1
 
   } # end of repeat
